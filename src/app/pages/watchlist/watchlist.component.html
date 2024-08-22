@@ -1,0 +1,23 @@
+<div class="watchlist-container">
+  <div class="container mt-5">
+    <h2 *ngIf="watchlist.length < 0">Your Watchlist</h2>
+    <div class="text-white" *ngIf="watchlist.length === 0">No items in your watchlist.</div>
+    <div *ngIf="watchlist.length > 0" class="row">
+      <div *ngFor="let item of watchlist" class="col-md-3 mb-4">
+        <div class="card">
+          <img
+            [src]="'https://image.tmdb.org/t/p/original/' + item.poster_path"
+            class="card-img-top"
+            alt="{{ item.title }}"
+          />
+          <div class="card-body">
+            <h5 class="card-title">{{ item.title }}</h5>
+            <button (click)="removeFromWatchlist(item)" class="btn btn-danger">
+              Remove
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

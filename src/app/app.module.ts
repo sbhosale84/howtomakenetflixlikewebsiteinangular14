@@ -9,20 +9,30 @@ import { MovieDetailsComponent } from './pages/movie-details/movie-details.compo
 import {HttpClientModule} from '@angular/common/http';
 import { MovieApiServiceService } from './service/movie-api-service.service';
 
-import {ReactiveFormsModule} from '@angular/forms';
+import {FormsModule, ReactiveFormsModule} from '@angular/forms';
+import { LoginComponent } from './pages/login/login.component';
+import { HeaderComponent } from './components/header/header.component';
+import { LoginGoogleComponent } from './pages/login-google/login-google.component';
+import { WatchlistComponent } from './pages/watchlist/watchlist.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     HomeComponent,
     SearchComponent,
-    MovieDetailsComponent
+    MovieDetailsComponent,
+    LoginComponent,
+    HeaderComponent,
+    LoginGoogleComponent,
+    WatchlistComponent,
+
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,
-    ReactiveFormsModule
+    FormsModule,
+    ReactiveFormsModule,
   ],
   providers: [MovieApiServiceService],
   bootstrap: [AppComponent]

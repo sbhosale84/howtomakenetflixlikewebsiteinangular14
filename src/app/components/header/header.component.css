@@ -1,0 +1,22 @@
+/* Ensure header is fixed to the top */
+.header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    background-color: black; /* Use background-color instead of background-image for solid color */
+    background-image: linear-gradient(to bottom, rgb(14, 14, 14), rgba(9, 9, 9, 0.07));
+    height: 70px;
+    z-index: 9999; /* Make sure header is on top of other elements */
+    display: flex;
+    align-items: center; /* Vertically center the content */
+    padding: 0 20px; /* Optional: Add padding for spacing */
+  }
+  
+  /* Style for the logo */
+  .header img {
+    width: 100px; /* Ensure consistent logo size */
+    height: auto; /* Maintain aspect ratio */
+    padding-top: 10px; /* Adjust vertical alignment */
+  }
+  
