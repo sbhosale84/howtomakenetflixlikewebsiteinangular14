@@ -1,0 +1,42 @@
+<div class="like-list-container">
+    <div class="container mt-5">
+      <h2 *ngIf="likelist.length > 0" class="heading">Your Liked Movies</h2>
+      <div class="text-white m-lg-2" *ngIf="likelist.length === 0">No items in your likelist.</div>
+      <div *ngIf="likelist.length > 0" class="table-container">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Poster</th>
+              <th>Title</th>
+              <th>Overview</th>
+              <th>Release Date</th>
+              <th>Rating</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of likelist">
+              <td>
+                <img
+                  [src]="'https://image.tmdb.org/t/p/original/' + item.poster_path"
+                  class="card-img"
+                  alt="{{ item.title }}"
+                />
+              </td>
+              <td>{{ item.title }}</td>
+              <td>{{ item.overview }}</td>
+              <td>{{ item.release_date }}</td>
+             
+              <td>{{ item.vote_average }}</td>
+              <td>
+                <button (click)="removeItem(item)" class="btn btn-danger">
+                  Remove
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  

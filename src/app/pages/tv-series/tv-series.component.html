@@ -22,7 +22,7 @@
           (click)="navigateToDetails(b)"
         />
         <div class="carousel-caption d-none d-md-block">
-          <h2>{{ b.original_title }}</h2>
+          <h2>{{ b.original_name }}</h2>
           <p>{{ b.overview }}</p>
         </div>
       </div>
@@ -50,58 +50,58 @@
 <!-- banner end  -->
 
 <div class="contain mt-3 mb-5 p-4">
-  <!-- Movie Categories -->
+  <!-- series Categories -->
   <div class="row" *ngFor="let category of categories">
     <h5 class="text-white">{{ category.name }}</h5>
     <div class="rowposter mt-3 p-2">
-      <ng-container *ngFor="let movie of this[category.data]">
-        <div class="movie-card">
+      <ng-container *ngFor="let series of this[category.data]">
+        <div class="series-card">
           <img
-            src="https://image.tmdb.org/t/p/original/{{ movie.poster_path }}"
+            src="https://image.tmdb.org/t/p/original/{{ series.poster_path }}"
             class="rowimg largeposter"
             alt="..."
-            (click)="navigateToDetails(movie)"
+            (click)="navigateToDetails(series)"
           />
           <div class="rating">
-            Rating: {{ movie.vote_average | number : "1.1-1" }}
+            Rating: {{ series.vote_average | number : "1.1-1" }}
           </div>
           <button
-          (click)="toggleWatchlist(movie)"
-          class="btn btn-primary watchlist-btn"
-        >
-          <ng-container
-            *ngIf="watchlistStatus[movie.id]; else addToWatchlist"
+            (click)="toggleWatchlist(series)"
+            class="btn btn-primary watchlist-btn"
           >
-            <img
-              src="assets/bookmark (1).png"
-              alt="Remove from Watchlist Icon"
-              class="icon"
-            />
-          </ng-container>
-          <ng-template #addToWatchlist>
-            <img
-              src="assets/bookmark (5).png"
-              alt="Add to Watchlist Icon"
-              class="icon"
-            />
-          </ng-template>
-        </button>
+            <ng-container
+              *ngIf="watchlistStatus[series.id]; else addToWatchlist"
+            >
+              <img
+                src="assets/bookmark (1).png"
+                alt="Remove from Watchlist Icon"
+                class="icon"
+              />
+            </ng-container>
+            <ng-template #addToWatchlist>
+              <img
+                src="assets/bookmark (5).png"
+                alt="Add to Watchlist Icon"
+                class="icon"
+              />
+            </ng-template>
+          </button>
 
-        <button
-          class="btn btn-primary likelist-btn"
-          (click)="toggleLikeList(movie)"
-        >
-          <ng-container *ngIf="likelistStatus[movie?.id]; else likeIcon">
-            <img
-              src="assets/thumb-up (2).png"
-              alt="Unlike Icon"
-              class="icon"
-            />
-          </ng-container>
-          <ng-template #likeIcon>
-            <img src="assets/thumbs-up (1).png" alt="like Icon" class="icon" />
-          </ng-template>
-        </button>
+          <button
+            class="btn btn-primary likelist-btn"
+            (click)="toggleLikeList(series)"
+          >
+            <ng-container *ngIf="likelistStatus[series?.id]; else likeIcon">
+              <img
+                src="assets/thumb-up (2).png"
+                alt="Unlike Icon"
+                class="icon"
+              />
+            </ng-container>
+            <ng-template #likeIcon>
+              <img src="assets/thumbs-up (1).png" alt="like Icon" class="icon" />
+            </ng-template>
+          </button>
         </div>
       </ng-container>
     </div>

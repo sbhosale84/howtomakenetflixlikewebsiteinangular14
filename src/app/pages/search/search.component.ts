@@ -1,7 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { MovieApiServiceService } from 'src/app/service/movie-api-service.service';
+import { TvSeriesApiService } from 'src/app/service/tv-series-api.service';
 import { Title, Meta } from '@angular/platform-browser';
+import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
+import { Movie, TvSeries } from 'src/app/models/searchModel';
 
 @Component({
   selector: 'app-search',
@@ -9,30 +12,62 @@ import { Title, Meta } from '@angular/platform-browser';
   styleUrls: ['./search.component.css'],
 })
 export class SearchComponent implements OnInit {
+  searchResult: (Movie | TvSeries)[] = []; // Use the defined interfaces
+  searchForm = new FormGroup({
+    searchTerm: new FormControl(''),
+  });
+
   constructor(
-    private service: MovieApiServiceService,
+    private movieService: MovieApiServiceService,
+    private tvService: TvSeriesApiService,
     private title: Title,
     private meta: Meta
   ) {
-    this.title.setTitle('Search movies - showtime');
+    this.title.setTitle('Search - Showtimes');
     this.meta.updateTag({
       name: 'description',
-      content: 'search here movies like avatar,war etc',
+      content: 'Search for movies and TV series here',
     });
   }
 
-  ngOnInit(): void {}
-
-  searchResult: any;
-  searchForm = new FormGroup({
-    movieName: new FormControl(null),
-  });
+  ngOnInit(): void {
+    this.searchForm.get('searchTerm')?.valueChanges
+      .pipe(
+        debounceTime(300),
+        distinctUntilChanged()
+      )
+      .subscribe(value => {
+        if (value) {
+          this.searchMoviesAndSeries(value);
+        } else {
+          this.searchResult = [];
+        }
+      });
+  }
 
   submitForm() {
-    console.log(this.searchForm.value, 'searchform#');
-    this.service.getSearchMovie(this.searchForm.value).subscribe((result) => {
-      console.log(result, 'searchmovie##');
-      this.searchResult = result.results;
+    const value = this.searchForm.get('searchTerm')?.value;
+    if (value) {
+      this.searchMoviesAndSeries(value);
+    }
+  }
+
+  private searchMoviesAndSeries(query: string) {
+    this.movieService.getSearchMovie({ movieName: query }).subscribe(movieResult => {
+      this.tvService.getSearchTvSeries({ seriesName: query }).subscribe(tvResult => {
+        this.searchResult = [
+          ...movieResult.results.map((movie: Movie) => ({ ...movie, type: 'movie' })),
+          ...tvResult.results.map((series: TvSeries) => ({ ...series, type: 'tvSeries' })),
+        ];
+      });
     });
+  }
+
+  isMovie(item: Movie | TvSeries): item is Movie {
+    return (item as Movie).title !== undefined;
+  }
+
+  isTvSeries(item: Movie | TvSeries): item is TvSeries {
+    return (item as TvSeries).name !== undefined;
   }
 }

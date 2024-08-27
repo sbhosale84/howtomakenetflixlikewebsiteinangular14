@@ -1,0 +1,59 @@
+.like-list-container {
+    background-color: #141414; /* Dark background like Netflix */
+    color: #e5e5e5; /* Light text color */
+    padding: 15px;
+  }
+  
+  .heading {
+    color: #ffffff; /* White heading color */
+    margin-bottom: 20px;
+  }
+  
+  .table-container {
+    overflow-x: auto;
+    background-color: white; /* Allow horizontal scrolling if needed */
+    border-radius: 10px;
+  }
+  
+  .table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  .table th, .table td {
+    padding: 15px;
+    text-align: left;
+  }
+  
+  .table th {
+    background-color: #ca0812; /* Light grey for table headers */
+    /* border-bottom: 1px solid #333; */
+    color: white; /* Subtle border for headers */
+  }
+  
+  /* .table td {
+    /* border-bottom: 1px solid #333; Subtle border for rows */
+  
+  
+  .table img.card-img {
+    width: 100px; /* Set a fixed width for the image */
+    height: auto; /* Maintain aspect ratio */
+  }
+  
+  .table tr:hover {
+    background-color: black; /* Darker background on row hover */
+    color: white;
+  }
+  
+  .btn-danger {
+    background-color: #be0f17; /* Netflix red color */
+    border: none;
+    color: white;
+    padding: 8px 12px;
+    cursor: pointer;
+  }
+  
+  .btn-danger:hover {
+    background-color: #b81d24; /* Darker red on hover */
+  }
+  

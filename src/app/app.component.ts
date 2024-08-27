@@ -1,26 +1,49 @@
 import { Component, OnInit, HostListener } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, NavigationEnd } from '@angular/router';
+import { UserService } from './service/user.service';
 import { LOGO_URL } from './config';
-import { LoginService } from './service/login.service';
+import { filter } from 'rxjs/operators';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css'],
 })
-export class AppComponent implements OnInit { // Implement OnInit
+export class AppComponent implements OnInit {
   title = 'showtime';
   logoUrl = LOGO_URL;
   userData: any;
+  navbg: any;
+  showNavbar: boolean = true;
 
-  constructor(private userService: LoginService, private router: Router) {}
+  constructor(
+    private userService: UserService,
+    private router: Router
+  ) { }
 
-  ngOnInit() { // Use ngOnInit lifecycle hook
-    this.getData();
+  ngOnInit() {
+    // Subscribe to user data changes
+    this.userService.user$.subscribe(user => {
+      this.userData = user;
+      console.log('Retrieved User Data:', this.userData);
+    });
+
+    // Check current route and toggle navbar visibility
+    this.router.events
+      .pipe(
+        filter((event): event is NavigationEnd => event instanceof NavigationEnd)
+      )
+      .subscribe((event: NavigationEnd) => {
+        // Hide navbar on login page
+        this.showNavbar = event.url !== '/login';
+      });
+
+    // Initialize background color based on scroll
+    this.updateNavBackground();
   }
 
-  navbg: any;
-  @HostListener('document:scroll') scrollover() {
+  @HostListener('document:scroll')
+  updateNavBackground() {
     if (document.body.scrollTop > 0 || document.documentElement.scrollTop > 0) {
       this.navbg = {
         'background-color': '#000000',
@@ -30,20 +53,8 @@ export class AppComponent implements OnInit { // Implement OnInit
     }
   }
 
-  getData() {
-    const storedData = sessionStorage.getItem('loggedInUser');
-    if (storedData) {
-      this.userData = JSON.parse(storedData);
-      console.log('Retrieved User Data:', this.userData.picture);
-    } else {
-      console.log('No user data found in session storage.');
-    }
-  }
-
   logOut() {
-    sessionStorage.removeItem('loggedInUser');
-    this.userData = null; // Clear user data in the component
-    this.userService.signOut();
+    this.userService.clearUser();
     this.router.navigate(['/login']); // Redirect to the login page
   }
 }

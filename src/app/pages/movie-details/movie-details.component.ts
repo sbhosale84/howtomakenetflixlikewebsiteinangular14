@@ -3,6 +3,8 @@ import { ActivatedRoute } from '@angular/router';
 import { MovieApiServiceService } from 'src/app/service/movie-api-service.service';
 import { Title, Meta } from '@angular/platform-browser';
 import { WatchlistService } from 'src/app/service/watchlist.service';
+import { LikeListService } from 'src/app/service/like-list.service'; // Import LikeListService
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-movie-details',
@@ -10,16 +12,23 @@ import { WatchlistService } from 'src/app/service/watchlist.service';
   styleUrls: ['./movie-details.component.css'],
 })
 export class MovieDetailsComponent implements OnInit {
+  getMovieDetailResult: any;
+  getMovieVideoResult: any;
+  getMovieCastResult: any;
+  watchlist: any[] = [];
+  watchlistStatus: { [key: number]: boolean } = {};
+  likelistStatus: { [key: number]: boolean } = {}; // LikeList status
+
   constructor(
     private service: MovieApiServiceService,
     private router: ActivatedRoute,
     private title: Title,
     private meta: Meta,
-    private watchlistService: WatchlistService
+    private watchlistService: WatchlistService,
+    private likeListService: LikeListService, // Inject LikeListService
+    private toaster: ToastrService
   ) {}
-  getMovieDetailResult: any;
-  getMovieVideoResult: any;
-  getMovieCastResult: any;
+
   ngOnInit(): void {
     let getParamId = this.router.snapshot.paramMap.get('id');
     console.log(getParamId, 'getparamid#');
@@ -29,12 +38,60 @@ export class MovieDetailsComponent implements OnInit {
     this.getMovieCast(getParamId);
   }
 
+  checkWatchlistStatus(movieId: number): void {
+    this.watchlistStatus[movieId] =
+      this.watchlistService.isMovieInWatchlist(movieId);
+  }
+
+  toggleWatchlist(movie: any): void {
+    const movieId = movie.id;
+
+    if (this.watchlistStatus[movieId]) {
+      this.watchlistService.removeFromWatchlist(movie);
+      this.watchlistStatus[movieId] = false;
+      this.toaster.error(`${movie.original_title} removed from watchlist.`);
+    } else {
+      this.watchlistService.addToMovieWatchlist(movie);
+      this.watchlistStatus[movieId] = true;
+      this.toaster.success(`${movie.original_title} has been added to watchlist.`);
+    }
+  }
+
+  checkLikeListStatus(movieId: number): void {
+    this.likelistStatus[movieId] =
+      this.likeListService.isItemInLikeList(movieId);
+  }
+
+  toggleLikeList(movie: any): void {
+    const movieId = movie.id;
+
+    if (this.likelistStatus[movieId]) {
+      this.likeListService.removeFromLikeList(movie);
+      this.likelistStatus[movieId] = false;
+      this.toaster.error(`${movie.original_title} removed from likelist.`);
+    } else {
+      this.likeListService.addMovieToLikeList(movie);
+      this.likelistStatus[movieId] = true;
+      this.toaster.success(`${movie.original_title} has been added to likelist.`);
+    }
+  }
+
+  checkWatchlistStatusForMovies(movies: any[]): void {
+    movies.forEach((movie) => this.checkWatchlistStatus(movie.id));
+  }
+
+  checkLikeListStatusForMovies(movies: any[]): void {
+    movies.forEach((movie) => this.checkLikeListStatus(movie.id));
+  }
+
   getMovie(id: any) {
     this.service.getMovieDetails(id).subscribe(async (result) => {
       console.log(result, 'getmoviedetails#');
       this.getMovieDetailResult = await result;
+      this.checkWatchlistStatusForMovies([this.getMovieDetailResult]);
+      this.checkLikeListStatusForMovies([this.getMovieDetailResult]);
 
-      // updatetags
+      // update tags
       this.title.setTitle(
         `${this.getMovieDetailResult.original_title} | ${this.getMovieDetailResult.tagline}`
       );
@@ -76,12 +133,6 @@ export class MovieDetailsComponent implements OnInit {
     });
   }
 
-
-  addToWatchlist(movie: any): void {
-    this.watchlistService.addToWatchlist(movie);
-    alert(`${movie.original_title} has been added to your watchlist.`);
-  }
-  
   getMovieCast(id: any) {
     this.service.getMovieCast(id).subscribe((result) => {
       console.log(result, 'movieCast#');

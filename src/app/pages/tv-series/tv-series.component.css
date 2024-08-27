@@ -74,8 +74,8 @@
   }
 }
 
-/* Ensures the rating text is positioned on top of the movie image */
-.movie-card {
+/* Ensures the rating text is positioned on top of the series image */
+.series-card {
   position: relative;
   display: inline-block;
   margin-right: 7px;
@@ -143,10 +143,10 @@
   background-color: rgb(255, 255, 255);
 }
 
-.movie-card:hover .watchlist-btn {
+.series-card:hover .watchlist-btn {
   opacity: 1;
 }
-.movie-card:hover .likelist-btn {
+.series-card:hover .likelist-btn {
   opacity: 1;
 }
 
